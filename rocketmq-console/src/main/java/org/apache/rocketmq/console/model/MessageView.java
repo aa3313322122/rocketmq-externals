@@ -52,6 +52,9 @@ public class MessageView {
     public static MessageView fromMessageExt(MessageExt messageExt) {
         MessageView messageView = new MessageView();
         BeanUtils.copyProperties(messageExt, messageView);
+        //use msgId not uniqueKey  使用msgId而不是unqKey，否则查询消息详情报错。
+        String msgId = MessageDecoder.createMessageId(ByteBuffer.allocate(MessageDecoder.MSG_ID_LENGTH), messageExt.getStoreHostBytes(), messageExt.getCommitLogOffset());
+        messageView.setMsgId(msgId);
         if (messageExt.getBody() != null) {
             messageView.setMessageBody(new String(messageExt.getBody(), Charsets.UTF_8));
         }
